@@ -19,6 +19,6 @@ Api for test performances, resilience and show fonctionnality in demo (docker fo
 * Get Hostname
 
 ## For more informations 
-1/ Deploy container : docker run -d -p 8050:8050 --name mock-api tuxivinc/mock-api:1.2
+1/ Deploy container : docker run -d -p 8050:8050 --name mock-api tuxivinc/mock-api
 
 2/ Call swagger for API infos : http://localhost:8050/mock-api/swagger-ui.html
