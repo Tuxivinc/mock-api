@@ -2,7 +2,7 @@ package org.api.mock.excp;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -26,7 +26,7 @@ public class IndexController implements ErrorController {
      *
      * @return the string
      */
-    @RequestMapping(value = PATH)
+    @GetMapping(value = PATH)
     public String error() {
         String context = environment.getProperty("server.servlet.context-path");
         String index = environment.getProperty("swagger.indexPage");

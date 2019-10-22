@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The type Api mock healthcheck.
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiMockHealthCheck {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiMockHealthCheck.class);
-    private static HttpStatus httpStatus = HttpStatus.OK;
+    private HttpStatus httpStatus = HttpStatus.OK;
 
     /**
      * Sets code return.
@@ -27,7 +24,7 @@ public class ApiMockHealthCheck {
      * @param statusCode the status code
      * @return the code
      */
-    @RequestMapping(value = "/setcode/{statusCode}", method = {RequestMethod.POST}, produces = "application/json")
+    @PostMapping(value = "/setcode/{statusCode}", produces = "application/json")
     @ApiOperation(value = "setCode", nickname = "set code return when call healthchek")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "statusCode", value = "New status return", required = true, dataType = "long", paramType = "path", defaultValue = "200")
@@ -38,7 +35,7 @@ public class ApiMockHealthCheck {
             @ApiResponse(code = 500, message = "Failure")})
     public ResponseEntity<MockResponseGeneric> setCode(@PathVariable int statusCode) {
         httpStatus = HttpStatus.valueOf(statusCode);
-        LOG.debug("set http status to {}", httpStatus.toString());
+        LOG.debug("set http status to {}", httpStatus);
         return new ResponseEntity<>(new MockResponseGeneric("Status are change to " + httpStatus.getReasonPhrase()), HttpStatus.OK);
     }
 
@@ -47,7 +44,7 @@ public class ApiMockHealthCheck {
      *
      * @return the status
      */
-    @RequestMapping(value = "", method = {RequestMethod.GET}, produces = "application/json")
+    @GetMapping(value = "", produces = "application/json")
     @ApiOperation(value = "getStatus", nickname = "get status code")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = String.class),

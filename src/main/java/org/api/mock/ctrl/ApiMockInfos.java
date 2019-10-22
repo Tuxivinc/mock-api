@@ -45,7 +45,7 @@ public class ApiMockInfos {
                         .collect(
                                 Collectors.toMap(
                                         entry -> entry,
-                                        entry -> System.getProperty(entry)
+                                        System::getProperty
                                 )),
                 HttpStatus.OK);
     }

@@ -10,6 +10,8 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.Collections;
+
 /**
  * The Swagger config.
  */
@@ -36,12 +38,13 @@ public class SwaggerConfig {
     private ApiInfo metaData() {
         return new ApiInfo(
                 "Api Mock",
-                "Mock a APIs for API-Manager tests",
-                "1.0",
-                "Terms of service",
-                new Contact("TODO", "http://TODO.org", "contact@TODO.org").getName(),
+                "Mock a APIs for API-Manager and docker tests/demo",
+                "1.5",
+                "https://github.com/Tuxivinc/mock-api",
+                new Contact("Tuxivinc", "https://github.com/Tuxivinc", "noreply@empty.fr"),
                 "Apache License Version 2.0",
-                "https://www.apache.org/licenses/LICENSE-2.0");
+                "https://www.apache.org/licenses/LICENSE-2.0",
+                Collections.emptyList());
     }
 
 }

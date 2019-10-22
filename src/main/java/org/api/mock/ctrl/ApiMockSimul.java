@@ -2,16 +2,14 @@ package org.api.mock.ctrl;
 
 import io.swagger.annotations.*;
 import org.api.mock.model.MockResponseGeneric;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
@@ -36,8 +34,6 @@ public class ApiMockSimul {
      */
     public static final String SUFFIX_FILE_TMP = ".txt";
 
-    private static final Logger LOG = LoggerFactory.getLogger(ApiMockSimul.class);
-
     /**
      * Gets simul traitement.
      *
@@ -45,7 +41,7 @@ public class ApiMockSimul {
      * @return the simul traitement
      * @throws InterruptedException the interrupted exception
      */
-    @RequestMapping(value = "/timeout/{sleepInMs}", method = RequestMethod.GET, produces = "application/json")
+    @GetMapping(value = "/timeout/{sleepInMs}", produces = "application/json")
     @ApiOperation(value = "getSimulTraitement", nickname = "Wait time in ms for simul traitements")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sleepInMs", value = "Sleep in Ms", required = true, dataType = "long", paramType = "path", defaultValue = "5000")
@@ -60,14 +56,9 @@ public class ApiMockSimul {
         if (!sleepInMs.matches("\\d{1,19}")) {
             throw new NumberFormatException("Value \"sleepInMs\" not Long type: " + sleepInMs);
         }
-        try {
-            // Wait
-            Thread.sleep(Long.valueOf(sleepInMs));
-            return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep %sms -> OK", sleepInMs)), HttpStatus.OK);
-        } catch (Exception e) {
-            LOG.error("Error thread sleep, {}", e.getMessage(), e);
-            throw e;
-        }
+        // Wait
+        Thread.sleep(Long.valueOf(sleepInMs));
+        return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep %sms -> OK", sleepInMs)), HttpStatus.OK);
     }
 
     /**
@@ -77,7 +68,7 @@ public class ApiMockSimul {
      * @return the simul response size
      * @throws IOException the io exception
      */
-    @RequestMapping(value = "/response-size/{sizeInKo}", method = RequestMethod.GET)
+    @GetMapping(value = "/response-size/{sizeInKo}")
     @ApiOperation(value = "getSimulResponseSize", nickname = "Response file size")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sizeInKo", value = "Size file response in ko", required = true, dataType = "long", paramType = "path", defaultValue = "5000")
@@ -100,15 +91,11 @@ public class ApiMockSimul {
             byte[] buf = new byte[Integer.valueOf(sizeInKo) * 1024];
             outputStream.write(buf);
             outputStream.flush();
-            outputStream.close();
             final HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.TEXT_PLAIN);
             headers.setContentLength(f.length());
             headers.set("content-disposition", "attachment; filename=" + f.getName());
             return new ResponseEntity<>(new FileSystemResource(f), headers, HttpStatus.CREATED);
-        } catch (Exception e) {
-            LOG.error("Error creating file, {}", e.getMessage(), e);
-            throw e;
         }
     }
 
@@ -118,7 +105,7 @@ public class ApiMockSimul {
      * @param httpCode the http code
      * @return the simul error
      */
-    @RequestMapping(value = "/error/{httpCode}", method = RequestMethod.GET)
+    @GetMapping(value = "/error/{httpCode}")
     @ApiOperation(value = "getSimulError", nickname = "Error reponse")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "httpCode", value = "HTTP Code error", required = true, dataType = "long", paramType = "path", defaultValue = "404")
@@ -129,13 +116,8 @@ public class ApiMockSimul {
             throw new NumberFormatException("Value \"codeError\" not Int type: " + httpCode);
         }
 
-        try {
-            HttpStatus httpStatus = HttpStatus.valueOf(Integer.valueOf(httpCode));
-            return new ResponseEntity<>(new MockResponseGeneric(httpStatus.getReasonPhrase()), httpStatus);
-        } catch (IllegalArgumentException e) {
-            LOG.error("The HTTP Code {} isn't valid code Http", httpCode, e);
-            throw e;
-        }
+        HttpStatus httpStatus = HttpStatus.valueOf(Integer.valueOf(httpCode));
+        return new ResponseEntity<>(new MockResponseGeneric(httpStatus.getReasonPhrase()), httpStatus);
     }
 
 }

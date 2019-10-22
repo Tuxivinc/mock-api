@@ -1,5 +1,7 @@
 package org.api.mock.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,8 @@ public class CallInfo {
 
     private String body;
 
+    private static final Logger LOG = LoggerFactory.getLogger(CallInfo.class);
+
     /**
      * Instantiates a new Call info.
      *
@@ -31,7 +35,7 @@ public class CallInfo {
      * @param request the request
      */
     public CallInfo(HttpHeaders headers, HttpServletRequest request) {
-        this.headers = headers.entrySet().stream().collect(Collectors.toMap(o -> o.getKey(), t -> t.getValue()));
+        this.headers = headers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         this.query = request.getQueryString();
         this.url = request.getRequestURL().toString();
         this.uri = request.getRequestURI();
@@ -41,7 +45,8 @@ public class CallInfo {
         } catch (UnknownHostException e) {
             this.hostName = "Error";
             this.hostIp = "Error";
-            e.printStackTrace();
+            // TODO pas de métier dans le model !!
+            LOG.error("Cannot obtains Inet informations", e);
         }
 
         try (BufferedReader reader = request.getReader()) {
@@ -49,7 +54,8 @@ public class CallInfo {
                 this.body = reader.lines().collect(Collectors.joining(""));
             }
         } catch (java.io.IOException ex) {
-            ex.printStackTrace();
+            // TODO pas de métier dans le model !!
+            LOG.error("Error optains Reader of request", ex);
         }
     }
 

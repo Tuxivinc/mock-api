@@ -4,14 +4,11 @@ import io.swagger.annotations.*;
 import org.api.mock.model.MockResponseGeneric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,15 +20,12 @@ public class ApiShutdown {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiShutdown.class);
 
-    @Autowired
-    private ApplicationContext appContext;
-
     /**
      * Shutdown response entity.
      *
      * @return the response entity
      */
-    @RequestMapping(value = "/{exitCode}", method = {RequestMethod.POST}, produces = "application/json")
+    @PostMapping(value = "/{exitCode}", produces = "application/json")
     @ApiOperation(value = "shutdown", nickname = "close jvm")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "exitCode", value = "Return exit code", required = true, dataType = "long", paramType = "path", defaultValue = "0")
@@ -48,7 +42,6 @@ public class ApiShutdown {
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            //SpringApplication.exit(appContext, () -> exitCode);
             System.exit(exitCode);
         });
         thread.setContextClassLoader(getClass().getClassLoader());
