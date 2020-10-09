@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan xmlns="urn:infinispan:config:9.4">
+    <cache-container>
+        <jmx domain="infinispan.embedded"/>
+        <local-cache name="keyValueCache" statistics="true"/>
+    </cache-container>
+</infinispan>
+
+
+<!--<?xml version="1.0" encoding="UTF-8"?>
+<ehcache
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+
+    <cacheManagerPeerProviderFactory
+            class="net.sf.ehcache.distribution.jgroups.JGroupsCacheManagerPeerProviderFactory"
+            properties="connect=TCP(start_port=7800):
+ TCPPING(initial_hosts=host1[7800],host2[7800];port_range=10;timeout=3000;
+ num_initial_members=3;up_thread=true;down_thread=true):
+ VERIFY_SUSPECT(timeout=1500;down_thread=false;up_thread=false):
+ pbcast.NAKACK(down_thread=true;up_thread=true;gc_lag=100;retransmit_timeout=3000):
+ pbcast.GMS(join_timeout=5000;join_retry_timeout=2000;shun=false;
+ print_local_addr=false;down_thread=true;up_thread=true)"
+            propertySeparator="::"/>
+
+    <defaultCache maxElementsInMemory="1000" eternal="false"
+                  overflowToDisk="false" memoryStoreEvictionPolicy="LFU">
+        <cacheEventListenerFactory
+                class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicatorFactory"
+                properties="replicateAsynchronously=false, replicatePuts=true,
+            replicateUpdates=true, replicateUpdatesViaCopy=false,
+            replicateRemovals=true"/>
+
+        <bootstrapCacheLoaderFactory
+                class="net.sf.ehcache.distribution.jgroups.JGroupsBootstrapCacheLoaderFactory"
+                properties="bootstrapAsynchronously=false"/>
+    </defaultCache>
+
+    <cache name="keyValueCache"
+           timeToLiveSeconds="10800">
+    </cache>
+
+</ehcache>-->
+
+<!--<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.ehcache.org/v3"
+        xsi:schemaLocation="http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd">
+
+    <cache alias="keyValueCache">
+        <key-type>java.lang.String</key-type>
+        <value-type>java.lang.String</value-type>
+        <expiry>
+            <ttl unit="hours">3</ttl>
+        </expiry>
+
+        <listeners>
+            <listener>
+                <class>org.api.mock.config.CacheEventLogger</class>
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+            </listener>
+        </listeners>
+
+        <resources>
+            <heap unit="entries">10</heap>
+            <offheap unit="MB">10</offheap>
+        </resources>
+    </cache>
+</config>-->
