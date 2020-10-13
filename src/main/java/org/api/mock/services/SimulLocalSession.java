@@ -20,14 +20,15 @@ public class SimulLocalSession {
 
     private static final Logger LOG = LoggerFactory.getLogger(SimulLocalSession.class);
 
-    private static final Map<String, SessionResponse> SESSIONS = new HashMap<>();
+    private static final Map<String, String> SESSIONS = new HashMap<>();
 
     public SessionResponse getSession(String token) {
         LOG.debug("Get session for token {}", token);
         return Optional.ofNullable(SESSIONS.get(token))
+                .map(v -> new SessionResponse(Boolean.TRUE, v))
                 .orElseGet(() -> {
                     String valSession = getValSession();
-                    SESSIONS.put(token, new SessionResponse(Boolean.TRUE, valSession));
+                    SESSIONS.put(token, valSession);
                     return new SessionResponse(Boolean.FALSE, valSession);
                 });
     }

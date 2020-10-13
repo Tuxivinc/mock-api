@@ -35,7 +35,7 @@ public class ApiMockSimul {
      */
     public static final String SUFFIX_FILE_TMP = ".txt";
 
-    public long sleepInMsMemory = 0l;
+    private long sleepInMsMemory = 0l;
 
     /**
      * Gets simul traitement.
@@ -66,7 +66,7 @@ public class ApiMockSimul {
     @Operation(summary = "Wait time in ms for simul traitements (by memory)")
     public ResponseEntity<MockResponseGeneric> getSimulTraitementMemory() throws InterruptedException {
         // Wait
-        Thread.sleep(Long.valueOf(sleepInMsMemory));
+        Thread.sleep(sleepInMsMemory);
         return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep %sms -> OK", sleepInMsMemory)), HttpStatus.OK);
     }
 

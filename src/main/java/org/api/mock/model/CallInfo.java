@@ -7,12 +7,13 @@ import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static java.net.InetAddress.getLocalHost;
 
 /**
  * Information when call mock (url, headers, body).
@@ -42,8 +43,8 @@ public class CallInfo {
         this.url = request.getRequestURL().toString();
         this.uri = request.getRequestURI();
         try {
-            this.hostIp = InetAddress.getLocalHost().getHostAddress();
-            this.hostName = InetAddress.getLocalHost().getHostName();
+            this.hostIp = getLocalHost().getHostAddress();
+            this.hostName = getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             this.hostName = "Error";
             this.hostIp = "Error";

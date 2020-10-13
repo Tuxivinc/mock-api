@@ -2,9 +2,8 @@ package org.api.mock.ctrl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.api.mock.model.MockResponseGeneric;
 import org.api.mock.model.SessionResponse;
-import org.api.mock.services.CacheSession;
+import org.api.mock.services.SharedSession;
 import org.api.mock.services.SimulLocalSession;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ public class ApiMockSession {
     private SimulLocalSession simulLocalSession;
 
     @Resource
-    private CacheSession cacheSession;
+    private SharedSession sharedSession;
 
     /**
      * Gets session store on server.
@@ -40,9 +39,9 @@ public class ApiMockSession {
      */
     @GetMapping(value = "/notshare/{token}", produces = "application/json")
     @Operation(summary = "Get session link onto token in local instance without share session")
-    public ResponseEntity<MockResponseGeneric> getSessionLocal(@NotBlank @PathVariable String token) {
+    public ResponseEntity<SessionResponse> getSessionLocal(@NotBlank @PathVariable String token) {
         SessionResponse response = simulLocalSession.getSession(token);
-        return new ResponseEntity<>(new MockResponseGeneric(response.getValue()), response.isExist() ? HttpStatus.OK : HttpStatus.CREATED);
+        return new ResponseEntity<>(response, response.isExist() ? HttpStatus.OK : HttpStatus.CREATED);
     }
 
     /**
@@ -53,9 +52,9 @@ public class ApiMockSession {
      */
     @GetMapping(value = "/share/{token}", produces = "application/json")
     @Operation(summary = "Get session link onto token with ehcache in multicast")
-    public ResponseEntity<MockResponseGeneric> getSessionMulticast(@NotBlank @DefaultValue("4gfe5hr49") @PathVariable String token) {
-        SessionResponse response = cacheSession.getSession(token);
-        return new ResponseEntity<>(new MockResponseGeneric(response.getValue()), response.isExist() ? HttpStatus.OK : HttpStatus.CREATED);
+    public ResponseEntity<SessionResponse> getSessionMulticast(@NotBlank @DefaultValue("4gfe5hr49") @PathVariable String token) {
+        SessionResponse response = sharedSession.getSession(token);
+        return new ResponseEntity<>(response, response.isExist() ? HttpStatus.OK : HttpStatus.CREATED);
     }
 
 }

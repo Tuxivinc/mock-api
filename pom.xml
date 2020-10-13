@@ -17,7 +17,7 @@
 	<description>A small application for mock API calls</description>
 
 	<properties>
-		<java.version>15</java.version>
+		<java.version>11</java.version>
 		<springdoc.openapi.version>1.4.8</springdoc.openapi.version>
 	</properties>
 
@@ -31,8 +31,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>14</source>
-					<target>14</target>
+					<source>11</source>
+					<target>11</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -51,10 +51,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

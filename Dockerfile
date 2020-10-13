@@ -1,5 +1,5 @@
 # BUILD
-FROM maven:3.6-jdk-11-slim as build-mvn
+FROM maven:3.6-openjdk-11 as build-mvn
 
 COPY ./src /build/src
 COPY ./pom.xml /build/pom.xml

@@ -6,9 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.Objects;
+
+import static java.net.InetAddress.getLocalHost;
 
 /**
  * The type Index controller (for errors).
@@ -32,7 +33,7 @@ public class IndexController implements ErrorController {
         String index = environment.getProperty("swagger.indexPage");
         String host = Objects.nonNull(environment.getProperty("server.port")) ? ":" + environment.getProperty("server.port") : "";
         try {
-            host = Inet4Address.getLocalHost().getHostAddress() + host;
+            host = getLocalHost().getHostAddress() + host;
         } catch (UnknownHostException e) {
             host = "[hostname]";
         }
