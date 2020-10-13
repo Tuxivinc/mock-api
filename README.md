@@ -19,6 +19,9 @@ Api for test performances, resilience and show fonctionnality in demo (docker fo
 * Get environment variables
 * Get Hostname
 * Latency on startup
+* Demo session sharing (for load balancing exemple)
+  * Store session local
+  * Multicast session
 
 ## For more informations 
 1/ Deploy container : docker run -d -p 8050:8050 --name mock-api tuxivinc/mock-api
