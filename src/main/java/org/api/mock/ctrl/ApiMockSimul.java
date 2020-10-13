@@ -1,7 +1,9 @@
 package org.api.mock.ctrl;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.api.mock.model.MockResponseGeneric;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -19,6 +22,7 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("/simulation")
+@Tag(name = "Simulation", description = "Simulate system comportment")
 public class ApiMockSimul {
 
 
@@ -41,16 +45,8 @@ public class ApiMockSimul {
      * @throws InterruptedException the interrupted exception
      */
     @GetMapping(value = "/timeout/{sleepInMs}", produces = "application/json")
-    @ApiOperation(value = "getSimulTraitement", nickname = "Wait time in ms for simul traitements")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sleepInMs", value = "Sleep in Ms", required = true, dataType = "long", paramType = "path", defaultValue = "5000")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 400, message = "Value not long type", response = String.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
-    public ResponseEntity<MockResponseGeneric> getSimulTraitement(@PathVariable String sleepInMs) throws InterruptedException {
+    @Operation(summary = "Wait time in ms for simul slow work")
+    public ResponseEntity<MockResponseGeneric> getSimulTraitement(@NotBlank @DefaultValue("5000") @PathVariable String sleepInMs) throws InterruptedException {
         // Vérification param
         if (!sleepInMs.matches("\\d{1,19}")) {
             throw new NumberFormatException("Value \"sleepInMs\" not Long type: " + sleepInMs);
@@ -67,11 +63,7 @@ public class ApiMockSimul {
      * @throws InterruptedException the interrupted exception
      */
     @GetMapping(value = "/timeout-memory", produces = "application/json")
-    @ApiOperation(value = "getSimulTraitement-memory", nickname = "Wait time in ms for simul traitements (by memory)")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
+    @Operation(summary = "Wait time in ms for simul traitements (by memory)")
     public ResponseEntity<MockResponseGeneric> getSimulTraitementMemory() throws InterruptedException {
         // Wait
         Thread.sleep(Long.valueOf(sleepInMsMemory));
@@ -84,17 +76,10 @@ public class ApiMockSimul {
      * @throws InterruptedException the interrupted exception
      */
     @PostMapping(value = "/timeout-memory/{sleepInMs}", produces = "application/json")
-    @ApiOperation(value = "setSimulTraitement-memory", nickname = "Set in memory time waiting")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sleepInMs", value = "Sleep in Ms", required = true, dataType = "long", paramType = "path", defaultValue = "5000")
-    })
-    public ResponseEntity<MockResponseGeneric> setSimulTraitementMemory(@PathVariable String sleepInMs) {
+    @Operation(summary = "Set in memory time waiting")
+    public ResponseEntity<MockResponseGeneric> setSimulTraitementMemory(@NotBlank @DefaultValue("5000") @PathVariable String sleepInMs) {
         sleepInMsMemory = Long.valueOf(sleepInMs);
-        return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep timeout in memory %sms -> OK", sleepInMsMemory)), HttpStatus.OK);
+        return new ResponseEntity<>(new MockResponseGeneric(String.format("Set Sleep timeout in memory %sms -> OK", sleepInMsMemory)), HttpStatus.OK);
     }
 
     /**
@@ -105,16 +90,8 @@ public class ApiMockSimul {
      * @throws IOException the io exception
      */
     @GetMapping(value = "/response-size/{sizeInKo}")
-    @ApiOperation(value = "getSimulResponseSize", nickname = "Response file size")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sizeInKo", value = "Size file response in ko", required = true, dataType = "long", paramType = "path", defaultValue = "5000")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Created", response = FileSystemResource.class),
-            @ApiResponse(code = 400, message = "Value not long type", response = String.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
-    public ResponseEntity<FileSystemResource> getSimulResponseSize(@PathVariable String sizeInKo) throws IOException {
+    @Operation(summary = "Response file size")
+    public ResponseEntity<FileSystemResource> getSimulResponseSize(@NotBlank @DefaultValue("5000") @PathVariable String sizeInKo) throws IOException {
         // Vérification param
         if (!sizeInKo.matches("\\d{1,19}")) {
             throw new NumberFormatException("Value \"sizeInKo\" not Long type: " + sizeInKo);
@@ -142,11 +119,8 @@ public class ApiMockSimul {
      * @return the simul error
      */
     @GetMapping(value = "/error/{httpCode}")
-    @ApiOperation(value = "getSimulError", nickname = "Error reponse")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "httpCode", value = "HTTP Code error", required = true, dataType = "long", paramType = "path", defaultValue = "404")
-    })
-    public ResponseEntity<MockResponseGeneric> getSimulError(@PathVariable String httpCode) {
+    @Operation(summary = "Error reponse")
+    public ResponseEntity<MockResponseGeneric> getSimulError(@NotBlank @DefaultValue("404") @PathVariable String httpCode) {
         // Vérification param
         if (!httpCode.matches("\\d{1,10}")) {
             throw new NumberFormatException("Value \"codeError\" not Int type: " + httpCode);

@@ -1,10 +1,12 @@
 package org.api.mock.ctrl;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.api.mock.model.MockResponseGeneric;
 import org.api.mock.model.SessionResponse;
 import org.api.mock.services.CacheSession;
 import org.api.mock.services.SimulLocalSession;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.NotBlank;
 
 
 /**
  * The type Api mock Session.
  */
 @RestController
+@Tag(name = "Session", description = "Simulation sessions")
 @RequestMapping("/session")
 public class ApiMockSession {
 
@@ -35,16 +39,8 @@ public class ApiMockSession {
      * @return Date created session
      */
     @GetMapping(value = "/notshare/{token}", produces = "application/json")
-    @ApiOperation(value = "getSessionLocal", nickname = "Get session link onto token in local instance without share session")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token", value = "Token session", required = true, paramType = "path", defaultValue = "4gfe5hr48")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MockResponseGeneric.class),
-            @ApiResponse(code = 201, message = "Session created", response = MockResponseGeneric.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
-    public ResponseEntity<MockResponseGeneric> getSessionLocal(@PathVariable String token) {
+    @Operation(summary = "Get session link onto token in local instance without share session")
+    public ResponseEntity<MockResponseGeneric> getSessionLocal(@NotBlank @PathVariable String token) {
         SessionResponse response = simulLocalSession.getSession(token);
         return new ResponseEntity<>(new MockResponseGeneric(response.getValue()), response.isExist() ? HttpStatus.OK : HttpStatus.CREATED);
     }
@@ -56,16 +52,8 @@ public class ApiMockSession {
      * @return Date created session
      */
     @GetMapping(value = "/share/{token}", produces = "application/json")
-    @ApiOperation(value = "getSessionMulticast", nickname = "Get session link onto token with ehcache in multicast")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "token", value = "Token session", required = true, paramType = "path", defaultValue = "4gfe5hr49")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MockResponseGeneric.class),
-            @ApiResponse(code = 201, message = "Session created", response = MockResponseGeneric.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
-    public ResponseEntity<MockResponseGeneric> getSessionMulticast(@PathVariable String token) {
+    @Operation(summary = "Get session link onto token with ehcache in multicast")
+    public ResponseEntity<MockResponseGeneric> getSessionMulticast(@NotBlank @DefaultValue("4gfe5hr49") @PathVariable String token) {
         SessionResponse response = cacheSession.getSession(token);
         return new ResponseEntity<>(new MockResponseGeneric(response.getValue()), response.isExist() ? HttpStatus.OK : HttpStatus.CREATED);
     }

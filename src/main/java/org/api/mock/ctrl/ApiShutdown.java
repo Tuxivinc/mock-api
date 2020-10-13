@@ -1,9 +1,11 @@
 package org.api.mock.ctrl;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.api.mock.model.MockResponseGeneric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,10 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * The type Api shutdown (control exit application).
  */
 @RestController
+@Tag(name = "Shutdown", description = "Shutdown App with exit code")
 @RequestMapping("/shutdown")
 public class ApiShutdown {
 
@@ -26,15 +31,8 @@ public class ApiShutdown {
      * @return the response entity
      */
     @PostMapping(value = "/{exitCode}", produces = "application/json")
-    @ApiOperation(value = "shutdown", nickname = "close jvm")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "exitCode", value = "Return exit code", required = true, dataType = "long", paramType = "path", defaultValue = "0")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = String.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure")})
-    public ResponseEntity<MockResponseGeneric> shutdown(@PathVariable int exitCode) {
+    @Operation(summary = "close jvm")
+    public ResponseEntity<MockResponseGeneric> shutdown(@NotBlank @DefaultValue("0") @PathVariable int exitCode) {
         LOG.info("Shutdown required by call API");
         Thread thread = new Thread(() -> {
             try {

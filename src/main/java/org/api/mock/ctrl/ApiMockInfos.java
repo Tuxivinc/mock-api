@@ -1,8 +1,7 @@
 package org.api.mock.ctrl;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.api.mock.model.MockResponseGeneric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import java.util.stream.Collectors;
  * The type Api get informations.
  */
 @RestController
+@Tag(name = "Info", description = "System information")
 @RequestMapping("/getinfos")
 public class ApiMockInfos {
 
@@ -33,11 +33,7 @@ public class ApiMockInfos {
      * @return
      */
     @GetMapping(value = "/jvm")
-    @ApiOperation(value = "getJvmInformation", nickname = "Return informations arguments of JVM")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
+    @Operation(summary = "Return informations arguments of JVM")
     public ResponseEntity<Map<String, String>> getJvmInformation() {
         return new ResponseEntity<>(
                 System.getProperties().stringPropertyNames()
@@ -56,11 +52,7 @@ public class ApiMockInfos {
      * @return
      */
     @GetMapping(value = "/hostname")
-    @ApiOperation(value = "getHostname", nickname = "Return hostname")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
+    @Operation(summary = "Return hostname")
     public ResponseEntity<MockResponseGeneric> getHostname() {
         String hostName;
         try {
@@ -80,11 +72,7 @@ public class ApiMockInfos {
      * @return
      */
     @GetMapping(value = "/varenv")
-    @ApiOperation(value = "getEnvVar", nickname = "Return all environment variable")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure", response = String.class)})
+    @Operation(summary = "Return all environment variable")
     public ResponseEntity<Map<String, String>> getEnvVar() {
         return new ResponseEntity<>(
                 System.getenv(),
