@@ -1,6 +1,7 @@
 package org.api.mock.ctrl;
 
-import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.api.mock.model.MockResponseGeneric;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,10 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * The type Api mock healthcheck.
  */
 @RestController
+@Tag(name = "HealthCheck", description = "HealthCheck call")
 @RequestMapping("/healthcheck")
 public class ApiMockHealthCheck {
 
@@ -25,15 +29,8 @@ public class ApiMockHealthCheck {
      * @return the code
      */
     @PostMapping(value = "/setcode/{statusCode}", produces = "application/json")
-    @ApiOperation(value = "setCode", nickname = "set code return when call healthchek")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "statusCode", value = "New status return", required = true, dataType = "long", paramType = "path", defaultValue = "200")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = String.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure")})
-    public ResponseEntity<MockResponseGeneric> setCode(@PathVariable int statusCode) {
+    @Operation(summary = "Set Http Status code return when call healthchek")
+    public ResponseEntity<MockResponseGeneric> setCode(@NotBlank @PathVariable int statusCode) {
         httpStatus = HttpStatus.valueOf(statusCode);
         LOG.debug("set http status to {}", httpStatus);
         return new ResponseEntity<>(new MockResponseGeneric("Status are change to " + httpStatus.getReasonPhrase()), HttpStatus.OK);
@@ -45,11 +42,7 @@ public class ApiMockHealthCheck {
      * @return the status
      */
     @GetMapping(value = "", produces = "application/json")
-    @ApiOperation(value = "getStatus", nickname = "get status code")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = String.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure")})
+    @Operation(summary = "get status code")
     public ResponseEntity<MockResponseGeneric> getStatus() {
         return new ResponseEntity<>(new MockResponseGeneric("Status is " + httpStatus.getReasonPhrase()), httpStatus);
     }

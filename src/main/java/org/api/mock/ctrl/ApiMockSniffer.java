@@ -1,8 +1,7 @@
 package org.api.mock.ctrl;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.api.mock.model.CallInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  * The type Api mock sniffer.
  */
 @RestController
+@Tag(name = "Sniffer", description = "Get Request Informations")
 @RequestMapping("/sniffer")
 public class ApiMockSniffer {
     private static final Logger LOG = LoggerFactory.getLogger(ApiMockSniffer.class);
@@ -29,12 +29,8 @@ public class ApiMockSniffer {
      * @param request the request
      * @return the headers
      */
-    @RequestMapping(value = "/headers", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH}, produces = "application/json")
-    @ApiOperation(value = "getHeaders", nickname = "get header informations")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = CallInfo.class),
-            @ApiResponse(code = 404, message = "Not Found"),
-            @ApiResponse(code = 500, message = "Failure")})
+    @RequestMapping(value = "/headers", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH, RequestMethod.OPTIONS, RequestMethod.HEAD, RequestMethod.PUT}, produces = "application/json")
+    @Operation(summary = "get header informations")
     public CallInfo getHeaders(@RequestHeader HttpHeaders headers, HttpServletRequest request) {
         CallInfo callInfo = new CallInfo(headers, request);
         LOG.debug("{}", callInfo);
