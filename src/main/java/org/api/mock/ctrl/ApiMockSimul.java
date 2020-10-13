@@ -7,10 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +30,8 @@ public class ApiMockSimul {
      * The constant SUFFIX_FILE_TMP.
      */
     public static final String SUFFIX_FILE_TMP = ".txt";
+
+    public long sleepInMsMemory = 0l;
 
     /**
      * Gets simul traitement.
@@ -59,6 +58,43 @@ public class ApiMockSimul {
         // Wait
         Thread.sleep(Long.valueOf(sleepInMs));
         return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep %sms -> OK", sleepInMs)), HttpStatus.OK);
+    }
+
+    /**
+     * Gets simul traitement (in memory).
+     *
+     * @return the simul traitement
+     * @throws InterruptedException the interrupted exception
+     */
+    @GetMapping(value = "/timeout-memory", produces = "application/json")
+    @ApiOperation(value = "getSimulTraitement-memory", nickname = "Wait time in ms for simul traitements (by memory)")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure", response = String.class)})
+    public ResponseEntity<MockResponseGeneric> getSimulTraitementMemory() throws InterruptedException {
+        // Wait
+        Thread.sleep(Long.valueOf(sleepInMsMemory));
+        return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep %sms -> OK", sleepInMsMemory)), HttpStatus.OK);
+    }
+
+    /**
+     * Set simul ms traitement in memory
+     *
+     * @throws InterruptedException the interrupted exception
+     */
+    @PostMapping(value = "/timeout-memory/{sleepInMs}", produces = "application/json")
+    @ApiOperation(value = "setSimulTraitement-memory", nickname = "Set in memory time waiting")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "Failure", response = String.class)})
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sleepInMs", value = "Sleep in Ms", required = true, dataType = "long", paramType = "path", defaultValue = "5000")
+    })
+    public ResponseEntity<MockResponseGeneric> setSimulTraitementMemory(@PathVariable String sleepInMs) {
+        sleepInMsMemory = Long.valueOf(sleepInMs);
+        return new ResponseEntity<>(new MockResponseGeneric(String.format("Sleep timeout in memory %sms -> OK", sleepInMsMemory)), HttpStatus.OK);
     }
 
     /**
