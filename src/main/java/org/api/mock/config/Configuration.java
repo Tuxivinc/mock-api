@@ -1,6 +1,6 @@
 package org.api.mock.config;
 
-import org.api.mock.services.MulticastReceiver;
+import org.api.mock.services.multicast.MulticastReceiver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,11 +34,6 @@ public class Configuration {
 
     private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
-    /**
-     * The entry point of application.
-     *
-     * @param args the input arguments
-     */
     public static void main(String[] args) {
         SpringApplication.run(Configuration.class, args);
     }
@@ -54,6 +49,8 @@ public class Configuration {
     public void atStartup() {
         LOG.info("Run Multicast Receiver thread");
         taskExecutor.execute(multicastReceiver);
+        LOG.info("Run all sync");
+        multicastReceiver.initialiserSync();
     }
 
 }
