@@ -3,17 +3,9 @@ package org.api.mock.model;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static java.net.InetAddress.getLocalHost;
 
 /**
  * Information when call mock (url, headers, body).
@@ -31,47 +23,67 @@ public class CallInfo {
 
     private static final Logger LOG = LoggerFactory.getLogger(CallInfo.class);
 
-    /**
-     * Instantiates a new Call info.
-     *
-     * @param headers the headers
-     * @param request the request
-     */
-    public CallInfo(HttpHeaders headers, HttpServletRequest request) {
-        this.headers = headers.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        this.query = request.getQueryString();
-        this.url = request.getRequestURL().toString();
-        this.uri = request.getRequestURI();
-        try {
-            this.hostIp = getLocalHost().getHostAddress();
-            this.hostName = getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            this.hostName = "Error";
-            this.hostIp = "Error";
-            // TODO pas de métier dans le model !!
-            LOG.error("Cannot obtains Inet informations", e);
+    public static final class CallInfoBuilder {
+        private String hostName;
+        private String hostIp;
+        private String url;
+        private String uri;
+        private String query;
+        private Map<String, List<String>> headers;
+        private String body;
+
+        private CallInfoBuilder() {
         }
 
-        try (BufferedReader reader = request.getReader()) {
-            if (Objects.nonNull(reader) && Objects.nonNull(reader.lines())) {
-                this.body = reader.lines().collect(Collectors.joining(""));
-            }
-        } catch (java.io.IOException ex) {
-            // TODO pas de métier dans le model !!
-            LOG.error("Error optains Reader of request", ex);
+        public static CallInfoBuilder aCallInfo() {
+            return new CallInfoBuilder();
         }
-    }
 
-    @Override
-    public String toString() {
-        return "CallInfo{" +
-                "hostName='" + hostName + '\'' +
-                ", hostIp='" + hostIp + '\'' +
-                ", url='" + url + '\'' +
-                ", uri='" + uri + '\'' +
-                ", query='" + query + '\'' +
-                ", headers=" + headers +
-                ", body='" + body + '\'' +
-                '}';
+        public CallInfoBuilder withHostName(String hostName) {
+            this.hostName = hostName;
+            return this;
+        }
+
+        public CallInfoBuilder withHostIp(String hostIp) {
+            this.hostIp = hostIp;
+            return this;
+        }
+
+        public CallInfoBuilder withUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public CallInfoBuilder withUri(String uri) {
+            this.uri = uri;
+            return this;
+        }
+
+        public CallInfoBuilder withQuery(String query) {
+            this.query = query;
+            return this;
+        }
+
+        public CallInfoBuilder withHeaders(Map<String, List<String>> headers) {
+            this.headers = headers;
+            return this;
+        }
+
+        public CallInfoBuilder withBody(String body) {
+            this.body = body;
+            return this;
+        }
+
+        public CallInfo build() {
+            CallInfo callInfo = new CallInfo();
+            callInfo.setHostName(hostName);
+            callInfo.setHostIp(hostIp);
+            callInfo.setUrl(url);
+            callInfo.setUri(uri);
+            callInfo.setQuery(query);
+            callInfo.setHeaders(headers);
+            callInfo.setBody(body);
+            return callInfo;
+        }
     }
 }

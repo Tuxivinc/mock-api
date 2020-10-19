@@ -1,4 +1,4 @@
-package org.api.mock.services;
+package org.api.mock.services.multicast;
 
 import org.api.mock.model.ExchangeSession;
 import org.api.mock.services.helper.JsonHelper;
@@ -22,6 +22,7 @@ public class MulticastReceiver implements Runnable {
     @Resource
     private MulticastService multicastService;
 
+    public static final String KEY_SYNC = "sync";
     private static final Logger LOG = LoggerFactory.getLogger(MulticastReceiver.class);
 
     @Override
@@ -29,22 +30,28 @@ public class MulticastReceiver implements Runnable {
         connectReceiver();
     }
 
-    public void connectReceiver() {
+    private void connectReceiver() {
         LOG.info("Listen Multicast");
         try (MulticastSocket socket = new MulticastSocket(multicastPort)) {
             byte[] buf = new byte[256];
             SocketAddress group = new InetSocketAddress(multicastIp, multicastPort);
             socket.joinGroup(group, NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
+            // Send Sync Request
+            multicastService.sendSyncRequest();
             while (true) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);
                 String received = new String(packet.getData(), 0, packet.getLength());
                 if ("end".equals(received)) {
+                    LOG.info("Received end request, shutdown receiver");
                     break;
+                } else if (KEY_SYNC.equals(received)) {
+                    LOG.debug("Received sync request");
+                    multicastService.sendAllOnMulticast();
                 } else {
-                    LOG.info("Received : {}", received);
+                    LOG.debug("Received: {}", received);
                     ExchangeSession exchangeSession = JsonHelper.getValue(new ExchangeSession(), received);
-                    multicastService.setValue(exchangeSession);
+                    multicastService.setValueInSession(exchangeSession);
                 }
             }
             socket.leaveGroup(group, NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));

@@ -1,6 +1,7 @@
 package org.api.mock.services;
 
 import org.api.mock.model.SessionResponse;
+import org.api.mock.services.multicast.MulticastService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class SharedSession {
                 .map(v -> new SessionResponse(Boolean.TRUE, v))
                 .orElseGet(() -> {
                     String valSession = SimulLocalSession.getValSession();
-                    multicastService.sendValue(token, valSession);
+                    multicastService.setValue(token, valSession);
                     return new SessionResponse(Boolean.FALSE, valSession);
                 });
     }

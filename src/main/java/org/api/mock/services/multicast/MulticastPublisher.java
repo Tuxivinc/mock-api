@@ -1,4 +1,4 @@
-package org.api.mock.services;
+package org.api.mock.services.multicast;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ public class MulticastPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(MulticastPublisher.class);
 
-    public void multicast(String multicastMessage) {
-        LOG.info("Send : {}", multicastMessage);
+    protected void multicast(String multicastMessage) {
+        LOG.debug("Send: {}", multicastMessage);
         try (DatagramSocket socket = new DatagramSocket()) {
             InetAddress group = InetAddress.getByName(multicastIp);
             byte[] buf = multicastMessage.getBytes();

@@ -33,7 +33,7 @@ public class SimulLocalSession {
                 });
     }
 
-    public static String getValSession() {
+    protected static String getValSession() {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.FRANCE));
     }
 
