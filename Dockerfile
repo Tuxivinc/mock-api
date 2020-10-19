@@ -7,16 +7,20 @@ COPY ./pom.xml /build/pom.xml
 RUN cd /build && mvn clean package
 
 # IMAGE
-FROM openjdk:11-slim
+FROM alpine:3.12
 
 LABEL maintainer="vdrouard.pro@gmail.com"
 
-COPY --from=build-mvn /build/target/mock-api*.jar /mock/mock-api.jar
-RUN apt-get update && apt-get install -y wget
+ENV JAVA_OPTS=""
 
 WORKDIR /mock
 RUN mkdir -p /mock-response
-ENV JAVA_OPTS=""
+
+COPY --from=build-mvn /build/target/mock-api*.jar /mock/mock-api.jar
+
 EXPOSE 8050
 HEALTHCHECK --interval=2s CMD  wget --spider -S 'http://localhost:8050/mock-api/healthcheck' 2>&1 | grep "HTTP/1.1 200" 1>/dev/null || exit 1
+
+RUN apk add --update wget openjdk11-jre
+
 ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /mock/mock-api.jar" ]
