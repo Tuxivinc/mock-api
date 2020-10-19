@@ -1,13 +1,13 @@
 # Mock-api 
-Api for test performances, resilience and show fonctionnality in demo (docker for example, with healthcheck)
+Api for test performances, resilience and show functionalities in demo (docker for example, with healthcheck)
 
 ## Informations
 * sources : https://github.com/Tuxivinc/mock-api
 
 ## Fonctions
-* Get request informations
+* Get request information
   * body, headers and URL
-* Simul healcheck
+* Simul healthcheck
   * get http code
   * set http code return
 * Sleep time response
@@ -19,7 +19,7 @@ Api for test performances, resilience and show fonctionnality in demo (docker fo
 * Get environment variables
 * Get Hostname
 * Latency on startup
-* Demo session sharing (for load balancing exemple)
+* Demo session sharing (for load balancing example)
   * Store session local
   * Multicast session
 

@@ -43,7 +43,7 @@ public class MulticastService {
     }
 
     private void send(String token, String valSession) {
-        LOG.debug("Send Token (id: \"{}\" / Value: \"{}\") in multicast group");
+        LOG.debug("Send Token (id: \"{}\" / Value: \"{}\") in multicast group", token, valSession);
         multicastPublisher.multicast(JsonHelper.toJson(new ExchangeSession(valSession, token)));
     }
 

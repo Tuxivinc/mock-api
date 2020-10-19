@@ -30,16 +30,14 @@ public class MulticastReceiver implements Runnable {
         connectReceiver();
     }
 
-    public void initialiserSync() {
-        multicastService.sendSyncRequest();
-    }
-
     private void connectReceiver() {
         LOG.info("Listen Multicast");
         try (MulticastSocket socket = new MulticastSocket(multicastPort)) {
             byte[] buf = new byte[256];
             SocketAddress group = new InetSocketAddress(multicastIp, multicastPort);
             socket.joinGroup(group, NetworkInterface.getByInetAddress(InetAddress.getLocalHost()));
+            // Send Sync Request
+            multicastService.sendSyncRequest();
             while (true) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 socket.receive(packet);

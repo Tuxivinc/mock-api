@@ -49,8 +49,6 @@ public class Configuration {
     public void atStartup() {
         LOG.info("Run Multicast Receiver thread");
         taskExecutor.execute(multicastReceiver);
-        LOG.info("Run all sync");
-        multicastReceiver.initialiserSync();
     }
 
 }
