@@ -24,7 +24,6 @@ public class CallInfo {
     private static final Logger LOG = LoggerFactory.getLogger(CallInfo.class);
 
     public static final class CallInfoBuilder {
-        private static Logger LOG = LoggerFactory.getLogger(CallInfo.class);
         private String hostName;
         private String hostIp;
         private String url;
@@ -72,11 +71,6 @@ public class CallInfo {
 
         public CallInfoBuilder withBody(String body) {
             this.body = body;
-            return this;
-        }
-
-        public CallInfoBuilder withLOG(Logger LOG) {
-            this.LOG = LOG;
             return this;
         }
 
