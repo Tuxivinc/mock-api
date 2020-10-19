@@ -1,5 +1,5 @@
 # Mock-api 
-Api for test performances, resilience and show functionalities in demo (docker for example, with healthcheck)
+Api for Mock, performances testing, resilience and show functionalities in demo (docker for example, with healthcheck)
 
 ## Informations
 * sources : https://github.com/Tuxivinc/mock-api
@@ -61,12 +61,54 @@ Api for test performances, resilience and show functionalities in demo (docker f
       * Call `curl -X POST "http://localhost:8050/mock-api/healthcheck/setcode/500"` -> Set return code at 500
     * Used: Docker Restart policy, Docker HealthCheck, Gatling Resilience, Traefik expose service
 * F7-Sniffer
+    * What: Get information of call (GET/PUT/POST/DELETE/OPTIONS/HEAD/PATCH)
+      * Hostname container
+      * HostIp
+      * Url received
+      * Uri received
+      * Quesry String
+      * List headers
+      * Body content
+    * How: `curl -X GET "http://localhost:8050/mock-api/sniffer/headers"`
+    * Used: Demo, Debug
 * F8-Error code
+    * What: Choose Http status of response
+    * How: 
+      * return http status 404 : `curl -X GET "http://localhost:8050/mock-api/simulation/error/404"`
+      * return http status 500 : `curl -X GET "http://localhost:8050/mock-api/simulation/error/500"`
+    * Used: Gatling Resilience, Demo
 * F9-Response time
+    * What: Choose response time (value in path)
+    * How: Response in 5s : `curl -X GET "http://localhost:8050/mock-api/simulation/timeout/5000"`
+    * Used: Gatling Resilience
 * F10-Response time in memory
+    * What: Choose response time (value store in memory of server, by default: 0ms)
+    * How: 
+      * Set response time to 10s: `curl -X POST "http://localhost:8050/mock-api/simulation/timeout-memory/10000"` 
+      * Get response in 10s: `curl -X GET "http://localhost:8050/mock-api/simulation/timeout-memory"` 
+    * Used: Gatling Resilience
 * F11-Response size
+    * What: Get file with specify size on request
+    * How: 
+      * Get File 200Ko: `curl -X GET "http://localhost:8050/mock-api/simulation/response-size/200" --output /tmp/file200`
+      * Get File 2Mo: `curl -X GET "http://localhost:8050/mock-api/simulation/response-size/2000" --output /tmp/file2000`
+    * Used: Gatling Resilience, Demo, Test
 * F12-Session not shared
+    * What: Store session (by token key) in server without share scales instances
+    * How: 
+      * Run a secondary server (replace `-p 8050:8050` by `-p 8060:8050`)
+      * Call first server with token "test", return timestamp of created session: `curl -X GET "http://localhost:8050/mock-api/session/share/test"` 
+      * Call secondary server with token "test", return same timestamp of first server: `curl -X GET "http://localhost:8060/mock-api/session/share/test"` 
+    * Used: Demo serverless constraints Docker
 * F13-Shared Session
+    * What: Share session (on multicast) between all servers
+    * How: 
+      * Run a secondary server (replace `-p 8050:8050` by `-p 8060:8050`)
+      * Call first server with token "test", return timestamp of created session: `curl -X GET "http://localhost:8050/mock-api/session/notshare/test"` 
+      * Call fisrt server with token "test", return same timestamp
+      * Call secondary server with token "test", return timestamp of created session, but different of first server: `curl -X GET "http://localhost:8060/mock-api/session/notshare/test"` 
+      * Call secondary server with token "test", return same timestamp
+    * Used: Demo serverless constraints Docker 
 * F14-Mock Json Response
     * What: Return Json file store in `/mock-response`
     * How: 
