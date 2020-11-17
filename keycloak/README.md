@@ -25,6 +25,7 @@
   * user: http://localhost:8050/mock-api/auth/user
   * admin: http://localhost:8050/mock-api/auth/admin
   * user and admin: http://localhost:8050/mock-api/auth/all-user
+  * get token: TODO
   
 ## Tests
 * KEYCLOAK_BEARER_ONLY=true -> No redirect (simulate front or another component get toker)
