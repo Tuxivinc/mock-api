@@ -12,7 +12,7 @@
 
 	<groupId>org.api.mock</groupId>
 	<artifactId>mock-api</artifactId>
-	<version>1.07.00</version>
+	<version>1.08.00</version>
 	<name>Mock Api</name>
 	<description>A small application for mock API calls</description>
 
