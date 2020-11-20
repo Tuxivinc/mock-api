@@ -5,7 +5,7 @@ Api for Mock, performances testing, resilience and show functionalities in demo 
 * sources : https://github.com/Tuxivinc/mock-api
 
 ## Functions
-* Mock Json response
+* Mock Json response (set by POST or mount volume)
 * Mock response size (download file) 
 * Mock response HTTP Status
 * Get Hostname
@@ -176,3 +176,11 @@ Examples of File
         "id":789
     }
     ```
+
+#### POST Mock Json Response
+| | |
+| --------------------- | ---------- |
+| **What** | Add Json file store in `/mock-response` |
+| **How** |  |
+| | curl -X POST "http://localhost:8050/mock-api/mock/testrep" -H  "accept: application/json" -H  "Content-Type: application/json" -d "{\"key\":\"haha\"}" -> créer un fichier testrep |
+| **Usage** | Mock Json call, Gatling Resilience test |
