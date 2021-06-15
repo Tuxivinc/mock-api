@@ -53,7 +53,7 @@ public class ApiMockSniffer {
                 .withUrl(request.getRequestURL().toString())
                 .withUri(request.getRequestURI())
                 .withHostIp(Optional.ofNullable(netInfo).map(InetAddress::getHostAddress).orElse("Error"))
-                .withHostName(Optional.ofNullable(netInfo).map(InetAddress::getHostName).orElse("Error"));
+                .withHostName(Optional.ofNullable(netInfo).map(InetAddress::getHostName).orElse(Optional.ofNullable(System.getenv("HOSTNAME")).orElse("Error")));
 
         try (BufferedReader reader = request.getReader()) {
             if (Objects.nonNull(reader) && Objects.nonNull(reader.lines())) {
