@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -59,7 +60,7 @@ public class ApiMockInfos {
             hostName = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
             LOG.error("Error when retry hostname", e);
-            hostName = "error";
+            hostName = Optional.ofNullable(System.getenv("HOSTNAME")).orElse("Error");
         }
         return new ResponseEntity<>(
                 new MockResponseGeneric(hostName),

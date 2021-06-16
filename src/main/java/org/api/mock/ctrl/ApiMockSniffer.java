@@ -13,11 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.net.*;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.net.InetAddress.getLocalHost;
@@ -52,7 +49,7 @@ public class ApiMockSniffer {
                 .withQuery(request.getQueryString())
                 .withUrl(request.getRequestURL().toString())
                 .withUri(request.getRequestURI())
-                .withHostIp(Optional.ofNullable(netInfo).map(InetAddress::getHostAddress).orElse("Error"))
+                .withHostIp(Optional.ofNullable(netInfo).map(InetAddress::getHostAddress).orElse(getIpByNetworks().orElse("Error")))
                 .withHostName(Optional.ofNullable(netInfo).map(InetAddress::getHostName).orElse(Optional.ofNullable(System.getenv("HOSTNAME")).orElse("Error")));
 
         try (BufferedReader reader = request.getReader()) {
@@ -63,6 +60,27 @@ public class ApiMockSniffer {
             LOG.error("Error optains Reader of request", ex);
         }
         return callInfoBuilder.build();
+    }
+
+    private static Optional<String> getIpByNetworks() {
+        Optional ip = Optional.empty();
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+            for (NetworkInterface netint : Collections.list(nets)){
+                stringBuilder.append(netint.getName());
+                stringBuilder.append(":");
+                Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+                for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                    stringBuilder.append(inetAddress);
+                }
+                stringBuilder.append(" | ");
+            }
+            ip = Optional.of(stringBuilder.toString().substring(0 , stringBuilder.toString().length() - 3));
+        } catch (SocketException e) {
+            LOG.error("Cannot obtains Networks informations", e);
+        }
+        return ip;
     }
 
 }
